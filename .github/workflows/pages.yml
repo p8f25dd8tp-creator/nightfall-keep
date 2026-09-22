@@ -1,9 +1,10 @@
 name: Deploy NIGHTFALL KEEP
 on:
   push:
-    # Auch der Arbeitsbranch veröffentlicht, damit das Spiel schon vor dem
-    # Merge über einen Link spielbar ist.
-    branches: [main, 'claude/**']
+    # Nur main. Die Umgebung github-pages erlaubt ohnehin ausschließlich
+    # Deployments vom Standard-Branch; andere Branches wurden nach zwei
+    # Sekunden abgewiesen, bevor überhaupt ein Schritt lief.
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
