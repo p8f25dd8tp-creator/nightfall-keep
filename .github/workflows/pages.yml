@@ -1,7 +1,9 @@
 name: Deploy NIGHTFALL KEEP
 on:
   push:
-    branches: [main]
+    # Auch der Arbeitsbranch veröffentlicht, damit das Spiel schon vor dem
+    # Merge über einen Link spielbar ist.
+    branches: [main, 'claude/**']
   workflow_dispatch:
 permissions:
   contents: read
@@ -18,13 +20,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Prepare public game files
         run: |
           mkdir dist
           cp index.html dist/index.html
+          cp index.html dist/404.html
       - name: Configure Pages
         uses: actions/configure-pages@v5
+        with:
+          # Schaltet GitHub Pages selbst ein. Ohne das brach der Lauf mit
+          # "Get Pages site failed" ab, weil Pages nie aktiviert wurde.
+          enablement: true
       - name: Upload site
         uses: actions/upload-pages-artifact@v4
         with:
