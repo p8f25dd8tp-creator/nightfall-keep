@@ -51,7 +51,11 @@ zum Fenster hinaus.
 
 ## Die Nacht: Wellen und Karten
 
-Jede Nacht besteht aus **3 bis 7 Wellen**, die letzte ist die **finale Welle** — sie wird
+Die Nacht dunkelt das Tal ein und färbt es violett, bleibt aber gut lesbar — Burg, Blutaltäre,
+die Fackeln der Jäger und der Held werfen dabei warme Lichtinseln. Greifen Jäger den Bergfried an,
+warnt ein großes rotes **DEINE BURG WIRD ANGEGRIFFEN!** über dem Spielfeld.
+
+Jede Nacht besteht aus **3 bis 6 Wellen**, die letzte ist die **finale Welle** — sie wird
 angekündigt und bringt ab Nacht 2 einen Inquisitor, in jeder dritten Nacht den Silberritter. Nach jeder überstandenen Welle wählst du **eine von drei
 Karten**, die nur für diese Nacht gilt:
 
@@ -83,6 +87,7 @@ Inquisitoren (gepanzert, zäh) und der Silberritter als Boss in jeder dritten Na
 
 Weil die Kamera weit herausgezoomt ist, gibt es zwei Orientierungshilfen:
 
+* **Gegnerzähler** in der Kopfzeile: `NACHT 8 · WELLE 2/4 · 7 ⚔`
 * **Minimap** oben rechts: zeigt das ganze Tal mit allen drei Wegen (aktive Wege leuchten), Burg,
   eigenen Gebäuden, Blutteich, deinem Helden und dem aktuellen Bildausschnitt. Antippen klappt sie
   auf ein kleines 🗺-Symbol zusammen.
