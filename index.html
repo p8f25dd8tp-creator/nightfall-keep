@@ -1906,6 +1906,19 @@ function drawPlot(q){
     x.globalAlpha=1;
   }
 }
+/* Reichweite des Helden als ruhiger Bodenring — man sieht, wie weit man trifft */
+function drawHeroReach(){
+  const r=heroRange(), pulse=hero.swing>0 ? hero.swing*.35 : 0;
+  x.save();
+  x.globalAlpha = (phase==='night' ? .17 : .11) + pulse*.25;
+  x.strokeStyle = hero.frenzy>0 ? '#ff8fa3' : '#ffffff';
+  x.lineWidth = 2.4;
+  x.beginPath(); x.ellipse(hero.x, hero.y+6, r, r*.74, 0, 0, TAU); x.stroke();
+  x.globalAlpha = (phase==='night' ? .055 : .03) + pulse*.06;
+  x.fillStyle = hero.frenzy>0 ? '#ff5f7d' : '#ffe6ee';
+  x.fill();
+  x.restore();
+}
 function drawLaneMarkers(){
   const act=activeLanes();
   for(const l of LANES){
@@ -1936,6 +1949,7 @@ function draw(){
 
   if(bg) x.drawImage(bg,0,0);
   drawLaneMarkers();
+  drawHeroReach();
   pickNearestPlot();
   for(const q of plots) drawPlot(q);
   if(phase==='day') for(const o of ores) drawOre(o);

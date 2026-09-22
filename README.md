@@ -87,6 +87,8 @@ Inquisitoren (gepanzert, zäh) und der Silberritter als Boss in jeder dritten Na
 
 Weil die Kamera weit herausgezoomt ist, gibt es zwei Orientierungshilfen:
 
+* **Reichweiten-Ring** um den Helden: ein ruhiger Bodenring zeigt, wie weit du triffst — er
+  wächst mit Rang und Blutgabe *Blutlanze* und färbt sich im Blutrausch rot.
 * **Gegnerzähler** in der Kopfzeile: `NACHT 8 · WELLE 2/4 · 7 ⚔`
 * **Minimap** oben rechts: zeigt das ganze Tal mit allen drei Wegen (aktive Wege leuchten), Burg,
   eigenen Gebäuden, Blutteich, deinem Helden und dem aktuellen Bildausschnitt. Antippen klappt sie
