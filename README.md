@@ -87,6 +87,14 @@ Verteidigung aus. An jedem Wegende steht eine Kapelle: von dort kommen die Jäge
 **Die Jäger:** Fackelträger (schnell, leuchten), Armbrustjäger (halten Abstand und schießen),
 Inquisitoren (gepanzert, zäh) und der Silberritter als Boss in jeder dritten Nacht.
 
+## Schlankes Overlay
+
+Die Bedienung hält sich zurück, damit man das Spielfeld sieht: ein rundes Rang-Abzeichen, dessen
+Ring den Blutfortschritt zeigt, eine einzeilige Kopfzeile (`🌙 NACHT 3 · WELLE 2/4 · 7 ⚔`), Gold,
+Minimap und eine kompakte Knopfspalte. Hinweise blenden sich nach wenigen Sekunden aus, die
+Weg-Chips erscheinen nur in der Dämmerung, wenn man sie zum Bauen braucht. Auf dem iPhone belegt
+das Overlay damit rund ein Viertel des Bildschirms statt fast der Hälfte.
+
 ## Übersicht behalten
 
 Weil die Kamera weit herausgezoomt ist, gibt es zwei Orientierungshilfen:
@@ -102,7 +110,8 @@ Weil die Kamera weit herausgezoomt ist, gibt es zwei Orientierungshilfen:
 
 ## Steuerung
 
-* **Linker Daumen** (unten links) oder **WASD / Pfeiltasten**: Held bewegen
+* **Linker Daumen** (unten links) oder **WASD / Pfeiltasten**: Held bewegen. Er läuft mit Trägheit
+  an und aus, dreht sich weich in die Laufrichtung, lehnt sich in die Kurve und wirbelt Staub auf.
 * Held, Fledermaustürme, Blutaltäre und die **Wachen auf der Burgmauer** greifen automatisch an
 * **Bauen und Ausbauen:** Bauplatz oder Gebäude antippen (siehe oben). Ein Tipp neben das
   geöffnete Fenster schließt es wieder.
