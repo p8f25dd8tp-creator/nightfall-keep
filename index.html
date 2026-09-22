@@ -623,7 +623,7 @@ function tryPlot(px,py,lane){
   const d=Math.hypot(px-KEEP.x,py-KEEP.y);
   if(d<BUILD_MIN||d>BUILD_MAX) return false;
   if(Math.hypot(px-LAKE.x,py-LAKE.y)<LAKE.r+44) return false;
-  if(onAnyPath(px,py,60)) return false;
+  if(onAnyPath(px,py,104)) return false;
   if(plots.some(q=>Math.hypot(q.x-px,q.y-py)<96)) return false;
   if(trees.some(t=>Math.hypot(t.x-px,t.y-py)<46*t.s)) return false;
   plots.push({x:px,y:py,lane,b:null,seed:plots.length*1.7});
@@ -639,7 +639,7 @@ function spawnPlots(){
       const [px,py]=l.path[i], [ax,ay]=l.path[i+1];
       const nx=-(py-ay), ny=(px-ax), nl=Math.hypot(nx,ny)||1;
       for(const side of (rnd()<.5?[-1,1]:[1,-1])){
-        if(tryPlot(px+nx/nl*side*74, py+ny/nl*side*74, l.i)){ placed++; break }
+        if(tryPlot(px+nx/nl*side*122, py+ny/nl*side*122, l.i)){ placed++; break }
       }
     }
   }
@@ -657,7 +657,7 @@ function spawnOres(){
     const a=Math.random()*TAU, d=265+Math.random()*560;
     const ox=clamp(KEEP.x+Math.cos(a)*d,150,MAP.w-150), oy=clamp(KEEP.y+Math.sin(a)*d,150,MAP.h-150);
     if(Math.hypot(ox-LAKE.x,oy-LAKE.y)<LAKE.r+60) continue;
-    if(onAnyPath(ox,oy,62)) continue;
+    if(onAnyPath(ox,oy,104)) continue;
     if(Math.hypot(ox-KEEP.x,oy-KEEP.y)<175) continue;
     if(ores.some(o=>Math.hypot(o.x-ox,o.y-oy)<150)) continue;
     if(buildings.some(b=>Math.hypot(b.x-ox,b.y-oy)<b.r+50)) continue;
@@ -670,7 +670,7 @@ function spawnTrees(){
   while(trees.length<96 && guard++<6000){
     const tx=EDGE-6+rnd()*(MAP.w-2*EDGE+12), ty=EDGE-6+rnd()*(MAP.h-2*EDGE+12);
     if(Math.hypot(tx-LAKE.x,ty-LAKE.y)<LAKE.r+40) continue;
-    if(onAnyPath(tx,ty,74)) continue;
+    if(onAnyPath(tx,ty,112)) continue;
     if(Math.hypot(tx-KEEP.x,ty-KEEP.y)<215) continue;
     if(trees.some(t=>Math.hypot(t.x-tx,t.y-ty)<70)) continue;
     const r=rnd();
@@ -681,180 +681,234 @@ function spawnTrees(){
 
 /* --------------------------------------------- Hintergrund einmal rendern */
 let bg=null;
+
+/* Weiche, organische Fläche — die Grundform der ganzen Landschaft */
+function blobPath(g,cx,cy,rx,ry,seed,wob=.16,n=26,append=false){
+  const pts=[];
+  for(let i=0;i<n;i++){
+    const a=i/n*TAU;
+    const r=1 + Math.sin(a*3+seed)*wob + Math.sin(a*5.3+seed*1.7)*wob*.55 + Math.sin(a*2.1+seed*.6)*wob*.5;
+    pts.push([cx+Math.cos(a)*rx*r, cy+Math.sin(a)*ry*r]);
+  }
+  if(!append) g.beginPath();            /* sonst würde das äußere Rechteck verworfen */
+  g.moveTo((pts[0][0]+pts[n-1][0])/2,(pts[0][1]+pts[n-1][1])/2);
+  for(let i=0;i<n;i++){
+    const q=pts[i], w=pts[(i+1)%n];
+    g.quadraticCurveTo(q[0],q[1],(q[0]+w[0])/2,(q[1]+w[1])/2);
+  }
+  g.closePath();
+}
+/* Wiesenfleck mit hellem Rand — dieser Saum macht den offenen Look aus */
+function grassBlob(g,cx,cy,rx,ry,seed,main,rim){
+  g.save();
+  blobPath(g,cx,cy,rx,ry,seed);      g.fillStyle=rim;  g.fill();
+  blobPath(g,cx,cy,rx-13,ry-13,seed); g.fillStyle=main; g.fill();
+  g.restore();
+}
+
+/* Breite, offene Schneise statt enger Korridor */
 function paintLane(g,l){
   const pts=l.path;
-  const stroke=(w,col)=>{ g.lineCap='round'; g.lineJoin='round'; g.lineWidth=w; g.strokeStyle=col;
-    g.beginPath(); pts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1])); g.stroke() };
+  const stroke=(w,col,cap='round')=>{
+    g.lineCap=cap; g.lineJoin='round'; g.lineWidth=w; g.strokeStyle=col;
+    g.beginPath(); pts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));
+    g.stroke();
+  };
+  const rnd=mulberry32(11+l.i*97);
+
+  /* Alle Wege: heller Wiesensaum, dann die offene Fläche darin */
+  stroke(l.kind==='trench'?190:176, '#78a865');            /* Saum */
+  stroke(l.kind==='trench'?166:152, l.kind==='tunnel' ? '#6d6a6f' : '#a0865c');
   if(l.kind==='road'){
-    stroke(70,'#3b3526'); stroke(58,'#584d36'); stroke(44,'#736449'); stroke(30,'#847256');
-    const rnd=mulberry32(7);
-    for(let i=4;i<pts.length-4;i+=3){
+    stroke(152,'#b49a6c'); stroke(120,'#c2a97c');          /* offener Sandgrund */
+    stroke(52,'#9c8a68');                                   /* gepflasterter Mittelstreifen */
+    for(let i=2;i<pts.length-2;i+=2){                       /* Pflastersteine */
       const [ax,ay]=pts[i],[bx,by]=pts[i+1];
       const nx=-(by-ay), ny=(bx-ax), nl=Math.hypot(nx,ny)||1;
-      for(const s of [-1,1]){
-        g.fillStyle=rnd()<.5?'#8c8068':'#726857';
-        g.beginPath(); g.ellipse(ax+nx/nl*s*25, ay+ny/nl*s*25, 7+rnd()*4, 5+rnd()*3, rnd()*3, 0, TAU); g.fill();
+      for(let k=-1;k<=1;k++){
+        g.fillStyle = rnd()<.5 ? '#b3a281' : '#a19070';
+        g.beginPath();
+        g.ellipse(ax+nx/nl*k*17, ay+ny/nl*k*17, 9+rnd()*4, 6+rnd()*3, Math.atan2(by-ay,bx-ax), 0, TAU);
+        g.fill();
       }
     }
-    for(let i=0;i<pts.length;i+=2){
-      const [ax,ay]=pts[i]; g.fillStyle='rgba(38,32,22,.42)';
-      g.beginPath(); g.arc(ax+(rnd()-.5)*34, ay+(rnd()-.5)*34, 1.4+rnd()*2.2, 0, TAU); g.fill();
+    for(let i=0;i<pts.length;i+=2){                         /* Randsteine */
+      const [ax,ay]=pts[i],[bx,by]=pts[i+1]||pts[i];
+      const nx=-(by-ay), ny=(bx-ax), nl=Math.hypot(nx,ny)||1;
+      for(const sd of [-1,1]){
+        g.fillStyle = rnd()<.5 ? '#8e8168' : '#776b56';
+        g.beginPath(); g.ellipse(ax+nx/nl*sd*62, ay+ny/nl*sd*62, 8+rnd()*5, 6+rnd()*3, rnd()*3, 0, TAU); g.fill();
+      }
     }
   } else if(l.kind==='trench'){
-    stroke(92,'#26361f'); stroke(76,'#1d2c1b'); stroke(58,'#3d3222'); stroke(44,'#2a2115'); stroke(30,'#1c160e');
-    const rnd=mulberry32(23);
-    for(let i=3;i<pts.length-3;i+=2){
+    stroke(150,'#8a7048'); stroke(126,'#9c8055');           /* flache, offene Senke */
+    g.save(); g.globalAlpha=.34; stroke(150,'#3c2f1d'); g.restore();   /* Schattenkante */
+    stroke(96,'#a88c5f');
+    for(let i=2;i<pts.length-2;i+=3){                       /* Pfähle am Rand */
       const [ax,ay]=pts[i],[bx,by]=pts[i+1];
       const nx=-(by-ay), ny=(bx-ax), nl=Math.hypot(nx,ny)||1;
-      g.strokeStyle='rgba(14,11,7,.5)'; g.lineWidth=2; g.beginPath();
-      g.moveTo(ax+nx/nl*13, ay+ny/nl*13); g.lineTo(ax-nx/nl*13, ay-ny/nl*13); g.stroke();
-      if(i%6===3) for(const s of [-1,1]){
-        g.fillStyle='#3d3020'; g.fillRect(ax+nx/nl*s*30-3, ay+ny/nl*s*30-11, 6, 22);
-        g.fillStyle='#5b4a2e'; g.fillRect(ax+nx/nl*s*30-3, ay+ny/nl*s*30-11, 2.5, 22);
+      for(const sd of [-1,1]){
+        const px=ax+nx/nl*sd*64, py=ay+ny/nl*sd*64;
+        g.fillStyle='#4a3a23'; g.fillRect(px-3,py-13,6,24);
+        g.fillStyle='#6a5535'; g.fillRect(px-3,py-13,2.5,24);
+        g.fillStyle='#3a2d1b'; g.beginPath(); g.ellipse(px,py+11,7,3,0,0,TAU); g.fill();
       }
     }
   } else {
-    stroke(96,'#33313a'); stroke(80,'#242229'); stroke(56,'#141217'); stroke(40,'#09080c');
-    for(let i=3;i<pts.length-3;i+=5){
+    stroke(138,'#575460'); stroke(112,'#46434e');           /* offene Felsschlucht */
+    g.save(); g.globalAlpha=.4; stroke(132,'#241f28'); g.restore();
+    stroke(86,'#514d59');
+    for(let i=2;i<pts.length-2;i+=2){                       /* Felszacken am Rand */
       const [ax,ay]=pts[i],[bx,by]=pts[i+1];
       const nx=-(by-ay), ny=(bx-ax), nl=Math.hypot(nx,ny)||1;
-      g.strokeStyle='#4b3823'; g.lineWidth=7; g.beginPath();
-      g.moveTo(ax+nx/nl*30, ay+ny/nl*30); g.lineTo(ax-nx/nl*30, ay-ny/nl*30); g.stroke();
-      g.strokeStyle='#6a5230'; g.lineWidth=2.5; g.beginPath();
-      g.moveTo(ax+nx/nl*30, ay+ny/nl*30); g.lineTo(ax-nx/nl*30, ay-ny/nl*30); g.stroke();
+      for(const sd of [-1,1]){
+        const px=ax+nx/nl*sd*(58+rnd()*12), py=ay+ny/nl*sd*(58+rnd()*12), r=11+rnd()*13;
+        g.fillStyle = rnd()<.5 ? '#6a6672' : '#4e4a57';
+        g.beginPath();
+        g.moveTo(px-r,py+r*.4); g.lineTo(px-r*.4,py-r*.7); g.lineTo(px+r*.6,py-r*.3);
+        g.lineTo(px+r*.9,py+r*.5); g.closePath(); g.fill();
+      }
     }
-    const rnd=mulberry32(55);
-    for(let i=0;i<pts.length;i+=4){
-      const [ax,ay]=pts[i]; g.fillStyle='rgba(160,70,110,.18)';
-      g.beginPath(); g.arc(ax+(rnd()-.5)*20, ay+(rnd()-.5)*20, 4+rnd()*7, 0, TAU); g.fill();
+    for(let i=0;i<pts.length;i+=3){                         /* Glimmen im Grund */
+      const [ax,ay]=pts[i];
+      g.fillStyle='rgba(168,86,190,.16)';
+      g.beginPath(); g.arc(ax+(rnd()-.5)*50, ay+(rnd()-.5)*50, 8+rnd()*14, 0, TAU); g.fill();
     }
   }
-  /* Lager der Jäger am Eingang des Weges */
+
+  /* Herkunftsort der Jäger am Rand der Karte */
   const [sx,sy]=pts[0], [nx2,ny2]=pts[3];
   const a=Math.atan2(sy-ny2, sx-nx2);
-  g.save(); g.translate(sx,sy); g.rotate(a);
-  g.fillStyle='rgba(0,0,0,.45)'; g.beginPath(); g.ellipse(0,0,66,48,0,0,TAU); g.fill();
-  if(l.kind==='tunnel'){
-    g.fillStyle='#252229'; g.beginPath(); g.arc(0,0,54,0,TAU); g.fill();
-    g.fillStyle='#07060a'; g.beginPath(); g.ellipse(-6,0,38,30,0,0,TAU); g.fill();
-  } else if(l.kind==='trench'){
-    g.fillStyle='#241c12'; g.beginPath(); g.ellipse(0,0,50,40,0,0,TAU); g.fill();
-    g.fillStyle='#0f0c07'; g.beginPath(); g.ellipse(-4,0,34,28,0,0,TAU); g.fill();
-  } else {
-    g.fillStyle='#4a3c26'; g.fillRect(-14,-56,16,112);
-    g.fillStyle='#6a5838'; g.fillRect(-12,-56,5,112);
-    g.fillStyle='#31281b'; g.fillRect(-24,-62,36,16);
-  }
-  g.restore();
-  /* Kapelle / Zeltlager als Herkunftsort */
-  g.save(); g.translate(sx-Math.cos(a)*(-96), sy-Math.sin(a)*(-96));
-  g.fillStyle='rgba(0,0,0,.35)'; g.beginPath(); g.ellipse(0,10,40,16,0,0,TAU); g.fill();
-  g.fillStyle='#5e5a52'; g.fillRect(-20,-30,40,40);
-  g.fillStyle='#6f6a60'; g.fillRect(-20,-30,13,40);
-  g.beginPath(); g.moveTo(-26,-30); g.lineTo(0,-54); g.lineTo(26,-30); g.closePath();
+  g.save(); g.translate(sx-Math.cos(a)*-104, sy-Math.sin(a)*-104);
+  g.fillStyle='rgba(0,0,0,.3)'; g.beginPath(); g.ellipse(0,12,44,17,0,0,TAU); g.fill();
+  g.fillStyle='#5e5a52'; g.fillRect(-21,-31,42,42);
+  g.fillStyle='#716c62'; g.fillRect(-21,-31,14,42);
+  g.beginPath(); g.moveTo(-28,-31); g.lineTo(0,-57); g.lineTo(28,-31); g.closePath();
   g.fillStyle='#7a4038'; g.fill();
-  g.fillStyle='#d9cdb4'; g.fillRect(-3,-78,6,26); g.fillRect(-11,-70,22,6);   /* Kreuz */
-  g.fillStyle='#1e1a16'; g.fillRect(-6,-8,12,18);
+  g.beginPath(); g.moveTo(-28,-31); g.lineTo(0,-57); g.lineTo(-4,-31); g.closePath();
+  g.fillStyle='#8e4d43'; g.fill();
+  g.fillStyle='#d9cdb4'; g.fillRect(-3,-82,6,27); g.fillRect(-11,-74,22,6);
+  g.fillStyle='#1e1a16'; g.fillRect(-6,-9,12,20);
   g.restore();
-  g.fillStyle=l.color; g.font='900 34px Georgia,serif'; g.textAlign='center';
-  g.globalAlpha=.85; g.fillText(l.icon, sx, sy-72); g.globalAlpha=1;
-  g.font='800 17px system-ui'; g.fillStyle='rgba(255,255,255,.5)';
-  g.fillText(l.name, sx, sy-98);
+  g.fillStyle=l.color; g.font='900 36px Georgia,serif'; g.textAlign='center';
+  g.globalAlpha=.9; g.fillText(l.icon, sx, sy-78); g.globalAlpha=1;
+  g.font='800 18px system-ui'; g.fillStyle='rgba(255,255,255,.55)';
+  g.fillText(l.name, sx, sy-106);
 }
 
 function buildBackground(){
   bg=document.createElement('canvas'); bg.width=MAP.w; bg.height=MAP.h;
   const g=bg.getContext('2d'), rnd=mulberry32(20240922);
 
-  const grad=g.createLinearGradient(0,0,MAP.w*.5,MAP.h);
-  grad.addColorStop(0,'#67976e'); grad.addColorStop(.45,'#5b8663'); grad.addColorStop(1,'#4d7357');
-  g.fillStyle=grad; g.fillRect(0,0,MAP.w,MAP.h);
-
-  const tints=['#71a271','#52785c','#7fb478','#4d7056','#86bd7d','#5f8f67','#7b7e5f'];
-  for(let i=0;i<280;i++){
-    const px=rnd()*MAP.w, py=rnd()*MAP.h, r=60+rnd()*230;
+  /* 1) Erdgrund als Basis — darüber liegen später die Wiesen */
+  const base=g.createLinearGradient(0,0,MAP.w*.5,MAP.h);
+  base.addColorStop(0,'#9b8259'); base.addColorStop(.5,'#8d7550'); base.addColorStop(1,'#7d6746');
+  g.fillStyle=base; g.fillRect(0,0,MAP.w,MAP.h);
+  for(let i=0;i<150;i++){                                   /* Erdschattierung */
+    const px=rnd()*MAP.w, py=rnd()*MAP.h, r=70+rnd()*230;
     const rg=g.createRadialGradient(px,py,0,px,py,r);
-    rg.addColorStop(0, tints[(rnd()*tints.length)|0]+'55'); rg.addColorStop(1,'#00000000');
+    rg.addColorStop(0, (rnd()<.5?'#a68c60':'#7a6444')+'55'); rg.addColorStop(1,'#00000000');
     g.fillStyle=rg; g.beginPath(); g.arc(px,py,r,0,TAU); g.fill();
   }
-  /* ausgetretene Erde um die Burg */
-  const kg=g.createRadialGradient(KEEP.x,KEEP.y,80,KEEP.x,KEEP.y,BUILD_MAX+90);
-  kg.addColorStop(0,'rgba(134,110,84,.55)'); kg.addColorStop(.62,'rgba(120,100,78,.28)'); kg.addColorStop(1,'#00000000');
-  g.fillStyle=kg; g.beginPath(); g.arc(KEEP.x,KEEP.y,BUILD_MAX+90,0,TAU); g.fill();
 
-  /* Blutteich */
-  g.save();
-  g.fillStyle='#3f4a3c'; g.beginPath(); g.ellipse(LAKE.x,LAKE.y,LAKE.r+22,LAKE.r*.78+18,.2,0,TAU); g.fill();
-  const wg=g.createRadialGradient(LAKE.x-40,LAKE.y-30,10,LAKE.x,LAKE.y,LAKE.r);
-  wg.addColorStop(0,'#8e2b3c'); wg.addColorStop(.6,'#5d1626'); wg.addColorStop(1,'#380d1a');
-  g.fillStyle=wg; g.beginPath(); g.ellipse(LAKE.x,LAKE.y,LAKE.r,LAKE.r*.78,.2,0,TAU); g.fill();
-  for(let i=0;i<26;i++){
-    g.strokeStyle='rgba(240,180,190,.16)'; g.lineWidth=2;
-    const wx=LAKE.x+(rnd()-.5)*LAKE.r*1.5, wy=LAKE.y+(rnd()-.5)*LAKE.r*1.1;
-    g.beginPath(); g.moveTo(wx-14,wy); g.quadraticCurveTo(wx,wy-5,wx+14,wy); g.stroke();
+  /* 2) Große, offene Wiesenflächen mit hellem Saum */
+  const GM='#55874f', GR='#78a865', GD='#456f44';
+  const fields=[
+    [MAP.w*.30,MAP.h*.28,MAP.w*.34,MAP.h*.26,1.3],
+    [MAP.w*.72,MAP.h*.22,MAP.w*.28,MAP.h*.20,2.7],
+    [MAP.w*.20,MAP.h*.68,MAP.w*.24,MAP.h*.26,4.1],
+    [MAP.w*.62,MAP.h*.62,MAP.w*.32,MAP.h*.28,5.5],
+    [MAP.w*.46,MAP.h*.45,MAP.w*.26,MAP.h*.22,6.9],
+    [MAP.w*.86,MAP.h*.78,MAP.w*.20,MAP.h*.22,8.2]
+  ];
+  fields.forEach(f=>grassBlob(g,f[0],f[1],f[2],f[3],f[4],GM,GR));
+  for(let i=0;i<40;i++){                                    /* dunklere Wieseninseln */
+    const px=rnd()*MAP.w, py=rnd()*MAP.h;
+    g.save(); g.globalAlpha=.4;
+    blobPath(g,px,py,50+rnd()*120,40+rnd()*90,rnd()*9,.22);
+    g.fillStyle=GD; g.fill(); g.restore();
   }
-  g.restore();
 
+  /* 3) Ausgetretene Erde um die Burg */
+  const kg=g.createRadialGradient(KEEP.x,KEEP.y,90,KEEP.x,KEEP.y,BUILD_MAX+110);
+  kg.addColorStop(0,'rgba(150,126,92,.75)'); kg.addColorStop(.6,'rgba(140,118,86,.4)'); kg.addColorStop(1,'#00000000');
+  g.fillStyle=kg; g.beginPath(); g.arc(KEEP.x,KEEP.y,BUILD_MAX+110,0,TAU); g.fill();
+
+  /* 4) Blutteich mit Ufersaum */
+  g.save();
+  blobPath(g,LAKE.x,LAKE.y,LAKE.r+30,LAKE.r*.8+26,3.3,.1); g.fillStyle='#8a7f57'; g.fill();
+  blobPath(g,LAKE.x,LAKE.y,LAKE.r+8,LAKE.r*.8+6,3.3,.1);   g.fillStyle='#6b5f3f'; g.fill();
+  blobPath(g,LAKE.x,LAKE.y,LAKE.r,LAKE.r*.8,3.3,.1);
+  const wg=g.createRadialGradient(LAKE.x-50,LAKE.y-36,10,LAKE.x,LAKE.y,LAKE.r);
+  wg.addColorStop(0,'#9c2f42'); wg.addColorStop(.6,'#661828'); wg.addColorStop(1,'#3d0f1c');
+  g.fillStyle=wg; g.fill();
+  g.save(); g.clip();
+  for(let i=0;i<30;i++){
+    g.strokeStyle='rgba(245,190,200,.17)'; g.lineWidth=2.4;
+    const wx=LAKE.x+(rnd()-.5)*LAKE.r*1.7, wy=LAKE.y+(rnd()-.5)*LAKE.r*1.3;
+    g.beginPath(); g.moveTo(wx-16,wy); g.quadraticCurveTo(wx,wy-6,wx+16,wy); g.stroke();
+  }
+  g.restore(); g.restore();
+
+  /* 5) Die drei offenen Angriffsschneisen */
   LANES.forEach(l=>paintLane(g,l));
 
-  /* Burghof */
+  /* 6) Burghof */
   g.save();
-  g.beginPath();
-  for(let i=0;i<=40;i++){ const a=i/40*TAU, rr=150+Math.sin(a*5)*9+Math.cos(a*3)*6;
-    const px=KEEP.x+Math.cos(a)*rr, py=KEEP.y+Math.sin(a)*rr*.95; i?g.lineTo(px,py):g.moveTo(px,py) }
-  g.closePath(); g.clip();
-  g.fillStyle='#6c655c'; g.fillRect(KEEP.x-160,KEEP.y-160,320,320);
-  for(let ry=-9;ry<9;ry++) for(let rx=-9;rx<9;rx++){
+  blobPath(g,KEEP.x,KEEP.y,158,150,2.2,.08,34); g.clip();
+  g.fillStyle='#6c655c'; g.fillRect(KEEP.x-170,KEEP.y-170,340,340);
+  for(let ry=-10;ry<10;ry++) for(let rx=-10;rx<10;rx++){
     g.fillStyle = rnd()<.5 ? '#7a736a' : '#877f74';
     g.fillRect(KEEP.x+rx*18+(ry%2?9:0)+1, KEEP.y+ry*18+1, 16, 16);
   }
-  const fade=g.createRadialGradient(KEEP.x,KEEP.y,104,KEEP.x,KEEP.y,150);
-  fade.addColorStop(0,'rgba(124,104,80,0)'); fade.addColorStop(.6,'rgba(124,104,80,.55)'); fade.addColorStop(1,'rgba(124,104,80,.95)');
-  g.fillStyle=fade; g.fillRect(KEEP.x-160,KEEP.y-160,320,320);
+  const fade=g.createRadialGradient(KEEP.x,KEEP.y,108,KEEP.x,KEEP.y,158);
+  fade.addColorStop(0,'rgba(132,112,84,0)'); fade.addColorStop(1,'rgba(132,112,84,.92)');
+  g.fillStyle=fade; g.fillRect(KEEP.x-170,KEEP.y-170,340,340);
   g.restore();
-  g.save(); g.strokeStyle='rgba(66,54,42,.45)'; g.lineWidth=26; g.setLineDash([34,20]);
-  g.beginPath(); g.arc(KEEP.x,KEEP.y,160,0,TAU); g.stroke(); g.setLineDash([]); g.restore();
 
-  /* Gras, Blüten, Steinchen, Knochensplitter */
-  for(let i=0;i<5400;i++){
+  /* 7) Streu: Gras, Blüten, Kiesel, Knochensplitter */
+  for(let i=0;i<6200;i++){
     const px=rnd()*MAP.w, py=rnd()*MAP.h;
-    if(Math.hypot(px-LAKE.x,py-LAKE.y)<LAKE.r+14) continue;
+    if(Math.hypot(px-LAKE.x,py-LAKE.y)<LAKE.r+16) continue;
     const t=rnd();
-    if(t<.72){
-      g.strokeStyle = rnd()<.5 ? 'rgba(146,180,128,.38)' : 'rgba(92,128,92,.34)';
-      g.lineWidth=1.6; g.beginPath(); g.moveTo(px,py); g.lineTo(px+(rnd()-.5)*5, py-3-rnd()*5); g.stroke();
-    } else if(t<.88){
-      g.fillStyle = rnd()<.5 ? 'rgba(196,72,90,.42)' : 'rgba(210,200,180,.3)';
-      g.beginPath(); g.arc(px,py,1.3+rnd()*1.3,0,TAU); g.fill();
+    if(t<.62){
+      g.strokeStyle = rnd()<.5 ? 'rgba(150,190,132,.4)' : 'rgba(96,136,96,.34)';
+      g.lineWidth=1.7; g.beginPath(); g.moveTo(px,py); g.lineTo(px+(rnd()-.5)*6, py-4-rnd()*6); g.stroke();
+    } else if(t<.82){
+      g.fillStyle = rnd()<.5 ? 'rgba(206,78,96,.4)' : 'rgba(224,214,186,.3)';
+      g.beginPath(); g.arc(px,py,1.4+rnd()*1.5,0,TAU); g.fill();
+    } else if(t<.94){
+      g.fillStyle='rgba(152,150,138,.3)';
+      g.beginPath(); g.arc(px,py,1.2+rnd()*2.6,0,TAU); g.fill();
     } else {
-      g.fillStyle='rgba(146,148,138,.3)';
-      g.beginPath(); g.arc(px,py,1+rnd()*2.4,0,TAU); g.fill();
+      g.strokeStyle='rgba(226,220,200,.24)'; g.lineWidth=2;
+      g.beginPath(); g.moveTo(px,py); g.lineTo(px+(rnd()-.5)*11,py+(rnd()-.5)*11); g.stroke();
     }
   }
 
-  /* Felskessel am Kartenrand */
+  /* 8) Felsrand als Talkessel — organisch, nicht als Kasten */
   const band=EDGE;
   g.save();
   g.beginPath(); g.rect(0,0,MAP.w,MAP.h);
-  g.moveTo(band,band);
-  for(let i=0;i<=60;i++){ const t=i/60; g.lineTo(band+t*(MAP.w-2*band), band+Math.sin(t*22)*11) }
-  for(let i=0;i<=48;i++){ const t=i/48; g.lineTo(MAP.w-band+Math.sin(t*19)*11, band+t*(MAP.h-2*band)) }
-  for(let i=0;i<=60;i++){ const t=i/60; g.lineTo(MAP.w-band-t*(MAP.w-2*band), MAP.h-band+Math.sin(t*20)*11) }
-  for(let i=0;i<=48;i++){ const t=i/48; g.lineTo(band+Math.sin(t*17)*11, MAP.h-band-t*(MAP.h-2*band)) }
-  g.closePath(); g.fillStyle='#242026'; g.fill('evenodd'); g.clip('evenodd');
-  for(let i=0;i<950;i++){
-    const px=rnd()*MAP.w, py=rnd()*MAP.h, r=8+rnd()*26;
-    g.fillStyle = rnd()<.5 ? 'rgba(66,60,66,.55)' : 'rgba(22,19,24,.6)';
-    g.beginPath(); g.moveTo(px-r,py+r*.4); g.lineTo(px-r*.5,py-r*.6); g.lineTo(px+r*.6,py-r*.4);
-    g.lineTo(px+r*.8,py+r*.5); g.closePath(); g.fill();
+  blobPath(g,MAP.w/2,MAP.h/2,MAP.w/2-band,MAP.h/2-band,7.7,.045,44,true);
+  g.fillStyle='#2c2730'; g.fill('evenodd');
+  g.clip('evenodd');
+  for(let i=0;i<1100;i++){
+    const px=rnd()*MAP.w, py=rnd()*MAP.h, r=9+rnd()*28;
+    g.fillStyle = rnd()<.5 ? 'rgba(84,76,90,.55)' : 'rgba(26,22,30,.6)';
+    g.beginPath(); g.moveTo(px-r,py+r*.4); g.lineTo(px-r*.5,py-r*.6);
+    g.lineTo(px+r*.6,py-r*.4); g.lineTo(px+r*.8,py+r*.5); g.closePath(); g.fill();
   }
-  for(let i=0;i<220;i++){
+  for(let i=0;i<260;i++){
     const px=rnd()*MAP.w, py=rnd()*MAP.h;
-    g.fillStyle='rgba(60,88,58,.28)'; g.beginPath(); g.arc(px,py,4+rnd()*14,0,TAU); g.fill();
+    g.fillStyle='rgba(72,102,70,.26)'; g.beginPath(); g.arc(px,py,5+rnd()*16,0,TAU); g.fill();
   }
   g.restore();
-  g.save(); g.strokeStyle='rgba(0,0,0,.38)'; g.lineWidth=26;
-  g.strokeRect(band+13, band+13, MAP.w-2*band-26, MAP.h-2*band-26); g.restore();
+  /* Heller Saum an der Innenkante des Felsens */
+  g.save();
+  blobPath(g,MAP.w/2,MAP.h/2,MAP.w/2-band+6,MAP.h/2-band+6,7.7,.045,44);
+  g.strokeStyle='rgba(120,168,101,.5)'; g.lineWidth=12; g.stroke();
+  g.restore();
 }
 
 /* ------------------------------------------------------- 4) Simulation */

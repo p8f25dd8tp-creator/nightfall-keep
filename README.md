@@ -70,11 +70,15 @@ Einmal pro Nacht kannst du die Karten neu ziehen.
 Die Burg steht in der Nordwest-Ecke des Tals. Von den anderen Rändern führen drei optisch eindeutige
 Wege zu ihrem Tor:
 
+Das Tal ist **offen**: große Wiesenflächen mit hellem Saum, dazwischen Erdgrund, ein Blutteich und
+ein Felsrand als Talkessel. Die Angriffswege sind **breite Schneisen** durch diese Landschaft, keine
+engen Korridore — man läuft überall frei herum, aber die Jäger kommen ausschließlich über ihre Wege.
+
 | Weg | Optik | Farbe |
 |-----|-------|-------|
-| ① Die Heerstraße | gepflasterte Straße mit Randsteinen | gold |
-| ② Der Grabengang | ausgehobener Erdgraben mit Holzpfählen | blau |
-| ③ Die Katakomben | dunkler Felstunnel mit Stützbögen | violett |
+| ① Die Heerstraße | breite Sandallee mit Pflaster und Randsteinen | gold |
+| ② Der Grabengang | weite, flache Erdsenke mit Pfählen am Rand | blau |
+| ③ Die Katakomben | offene Felsschlucht mit Zacken und Glimmen | violett |
 
 Wie viele Wege angegriffen werden, wächst mit der Nacht (1 → 2 → ab Nacht 4 alle drei). Welche Wege
 **heute Nacht** aktiv sind, steht tagsüber in der Legende oben — danach richtest du deine
