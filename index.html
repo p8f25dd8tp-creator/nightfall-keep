@@ -78,18 +78,6 @@
     .hint b{color:#f3c9a0}
 
     /* ---------------- Untere Steuerung ---------------- */
-    .buildbar{position:fixed;left:0;right:0;bottom:calc(var(--safe-b) + 8px);z-index:6;display:flex;gap:6px;justify-content:center;
-      padding:0 8px;overflow-x:auto;touch-action:pan-x;scrollbar-width:none}
-    .buildbar::-webkit-scrollbar{display:none}
-    .build{position:relative;flex:0 0 auto;width:66px;height:70px;border-radius:16px;
-      background:linear-gradient(160deg,#3a1d2c,#150a12);border:1px solid #c9758c4d;box-shadow:0 6px 20px #000b;
-      color:#f4e6dd;font-size:23px;padding-top:6px;line-height:1}
-    .build small{display:block;font-size:9.5px;margin-top:3px;color:#dcc3c9;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 3px}
-    .build .cost{display:block;font-size:10px;margin-top:2px;color:var(--gold);font-weight:900;font-style:normal}
-    .build.selected{outline:2px solid var(--blood-lt);box-shadow:0 0 22px #e8566b66;background:linear-gradient(160deg,#5a2338,#1d0d17)}
-    .build.poor{opacity:.45}
-    .build:active{transform:scale(.95)}
-
     .actionrow{position:fixed;left:0;right:0;bottom:calc(var(--safe-b) + 88px);z-index:6;display:flex;justify-content:flex-end;
       align-items:flex-end;gap:8px;padding:0 10px;pointer-events:none}
     .rightcol{display:flex;flex-direction:column;align-items:flex-end;gap:8px;pointer-events:auto}
@@ -102,18 +90,7 @@
     .start-night{background:linear-gradient(160deg,#a32e42,#4d1220);border-color:#e9647c;min-width:130px}
     .hidden{display:none!important}
 
-    .confirm{pointer-events:auto;display:flex;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:18px;
-      padding:8px;box-shadow:0 8px 26px #000c;max-width:calc(100vw - 20px)}
-    .confirm .info{min-width:96px;padding:2px 4px;font-size:11px;color:#d3c2c8;line-height:1.3}
-    .confirm .info b{display:block;font-size:13px;color:#f3dcae;margin-bottom:2px}
-    .confirm .info u{text-decoration:none;color:#ff9d86;font-weight:800}
-    .confirm .info u.ok{color:#8fd79a}
-    .cbtn{width:56px;height:52px;border-radius:14px;font-size:22px;font-weight:900;display:grid;place-items:center}
-    .cbtn.yes{background:linear-gradient(160deg,#4f8a52,#22402a);border:1px solid #9fdca0}
-    .cbtn.yes:disabled{opacity:.4}
-    .cbtn.no{background:linear-gradient(160deg,#4a3230,#241716);border:1px solid #c98b80}
-    .cbtn:active{transform:scale(.95)}
-
+    .veil{position:fixed;inset:0;z-index:7;background:rgba(6,3,6,.55);backdrop-filter:blur(2px)}
     .popup{position:fixed;z-index:8;left:50%;transform:translateX(-50%);bottom:calc(var(--safe-b) + 170px);width:min(92vw,360px);
       background:var(--panel);border:1px solid var(--line);border-radius:20px;box-shadow:0 12px 36px #000d;padding:14px;pointer-events:auto}
     .popup h3{margin:0 0 4px;font:900 16px Georgia,serif;color:#f3dcae;display:flex;align-items:center;gap:8px}
@@ -123,6 +100,18 @@
     .up{background:linear-gradient(160deg,#c79a4d,#7a4f22);color:#20150a;border:1px solid #ffdc8d}
     .up:disabled{opacity:.45;color:#f0e3c8}
     .close{background:#ffffff14;border:1px solid #ffffff22}
+    .bprow{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:9px;width:100%;
+      padding:8px 6px;border:0;border-bottom:1px dashed #ffffff14;background:transparent;text-align:left;border-radius:10px}
+    .bprow:last-of-type{border-bottom:0}
+    .bprow:active{background:#ffffff10}
+    .bprow i{font-style:normal;font-size:21px;text-align:center}
+    .bprow b{display:block;font-size:13px;color:#eee0d8;font-weight:800}
+    .bprow u{text-decoration:none;display:block;font-size:10.5px;color:#a2929a;font-weight:600;margin-top:1px;
+      line-height:1.3}
+    .bprow s{text-decoration:none;font-weight:900;font-size:13px;color:var(--gold);white-space:nowrap;
+      background:#ffffff12;border:1px solid var(--line);border-radius:10px;padding:7px 10px}
+    .bprow.poor{opacity:.45}
+    .bprow.poor s{color:#e08a8a}
     .stat{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:1px dashed #ffffff14}
     .stat b{color:#e9d9b4}
 
@@ -213,17 +202,12 @@
       background:radial-gradient(circle at 35% 30%,#e8aab6,#6d2234);border:2px solid #ffc3ce77;box-shadow:0 4px 15px #000b}
 
     @media (max-width:360px){
-      .buildbar{gap:4px;padding:0 5px}
-      .build{width:56px;height:62px;font-size:19px}
-      .build small{font-size:8px}
-      .build .cost{font-size:9px}
       .rankbox b{font-size:12px}
       .card .head{font-size:11.5px;padding:7px 4px}
       .card .icn{font-size:27px;margin:8px 0 6px}
       .card .body{font-size:10.5px;padding:0 6px 6px}
     }
     @media (max-width:400px){
-      .build{width:60px;height:66px;font-size:21px}
       .pill{padding:5px 8px;font-size:12px}
       .joystick{width:118px;height:118px;left:10px}
       .minimap{width:92px;height:78px}
@@ -293,14 +277,7 @@
     </button>
   </div>
 
-  <div class="buildbar" id="buildbar"></div>
-
   <div class="actionrow">
-    <div class="confirm hidden" id="confirm">
-      <div class="info"><b id="cName">—</b><span id="cDesc">—</span><br><u id="cState">—</u></div>
-      <button class="cbtn no" id="cCancel" aria-label="Abbrechen">✕</button>
-      <button class="cbtn yes" id="cOk" aria-label="Bauen">✓</button>
-    </div>
     <div class="rightcol" id="rightcol">
       <div class="speeds">
         <button data-speed="1" class="on">×1</button>
@@ -310,6 +287,15 @@
       <button class="action" id="zoomBtn" title="Zoom">🔍<small id="zoomLbl" style="display:block;font-size:9px;font-weight:700">FERN</small></button>
       <button class="action start-night" id="startNight">NACHT STARTEN</button>
     </div>
+  </div>
+
+  <div class="veil hidden" id="veil"></div>
+
+  <div class="popup hidden" id="buildPanel">
+    <h3><span>🔨</span><span id="bpTitle">Freier Bauplatz</span></h3>
+    <p id="bpHint">Wähle, was hier entstehen soll.</p>
+    <div id="bpList"></div>
+    <div class="row" style="margin-top:10px"><button class="close" id="bpClose">SCHLIESSEN</button></div>
   </div>
 
   <div class="popup hidden" id="popup">
@@ -412,19 +398,19 @@ const RANKS = [
   {n:'Halbvampir', icon:'🩸', blut:120,
    dmg:1.35, hp:1.30, spd:1.06, rng:1.05, rate:.94, sun:.82, ab:'lifesteal',
    abName:'Lebensraub', desc:'10 % des Schadens, den du austeilst, heilt dich. Ab jetzt schwächt dich die Sonne.'},
-  {n:'Vampir', icon:'🦇', blut:450,
+  {n:'Vampir', icon:'🦇', blut:420,
    dmg:1.85, hp:1.70, spd:1.12, rng:1.12, rate:.88, sun:.80, ab:'mist',
    abName:'Nebelform', desc:'Jeder dritte Treffer geht durch dich hindurch — du löst dich kurz in Nebel auf.'},
-  {n:'Vampiradliger', icon:'👑', blut:1400,
+  {n:'Vampiradliger', icon:'👑', blut:1150,
    dmg:2.60, hp:2.30, spd:1.18, rng:1.20, rate:.82, sun:.80, ab:'thrall',
    abName:'Blutdiener', desc:'Eine Fledermaus aus deinem eigenen Blut kämpft dauerhaft an deiner Seite.'},
-  {n:'Vampirfürst', icon:'🏰', blut:3800,
+  {n:'Vampirfürst', icon:'🏰', blut:2600,
    dmg:3.70, hp:3.10, spd:1.24, rng:1.28, rate:.76, sun:.85, ab:'frenzy',
    abName:'Blutrausch', desc:'Getötete Jäger füllen deine Blutleiste. Ist sie voll, rast du 8 Sekunden lang: doppelter Schaden und Tempo.'},
-  {n:'Himmlischer', icon:'✨', blut:9000,
+  {n:'Himmlischer', icon:'✨', blut:5400,
    dmg:5.20, hp:4.20, spd:1.32, rng:1.38, rate:.70, sun:1.00, ab:'bloodmoon',
    abName:'Blutmond', desc:'Alle 9 Sekunden zerreißt eine Blutnova alles um dich herum. Das Sonnenlicht kann dir nichts mehr anhaben.'},
-  {n:'Gottbezwinger', icon:'⚡', blut:20000,
+  {n:'Gottbezwinger', icon:'⚡', blut:10500,
    dmg:7.50, hp:6.00, spd:1.40, rng:1.50, rate:.62, sun:1.00, ab:'dominion',
    abName:'Herrschaft', desc:'Deine bloße Gegenwart bricht die Jäger: Alle Feinde in deiner Nähe verlieren 30 % Schaden und Tempo.'}
 ];
@@ -558,12 +544,14 @@ function heroRange(){ return heroBase().range }
 function heroGain(){ return heroBase().gain }
 
 function saveRun(){
-  if(!run) return;
+  /* Nur eine laufende Partie darf schreiben. Sonst hat der visibilitychange-
+     Handler nach einer Niederlage den gelöschten Spielstand wieder angelegt. */
+  if(!run || !running) return;
   try{
     localStorage.setItem(RUN_KEY, JSON.stringify({
       night, gold:Math.floor(state.gold), xp:state.xp, lvl:state.lvl, kills:state.kills,
       keepHp:Math.round(KEEP.hp), keepMax:KEEP.max, heroHp:Math.round(hero.hp),
-      buildings: buildings.map(b=>({x:Math.round(b.x),y:Math.round(b.y),type:b.type,level:b.level,hp:Math.round(b.hp)}))
+      buildings: buildings.map(b=>({pi:b.pi,type:b.type,level:b.level,hp:Math.round(b.hp)}))
     }));
   }catch(e){}
 }
@@ -574,7 +562,10 @@ function loadRun(){
   night=Math.max(1,s.night|0||1); state.gold=s.gold??140; state.xp=s.xp||0;
   state.lvl=s.lvl||1; state.kills=s.kills||0;
   KEEP.max=s.keepMax||520; KEEP.hp=clamp(s.keepHp||KEEP.max,1,KEEP.max);
-  buildings=(s.buildings||[]).filter(b=>BUILDS[b.type]).map(b=>makeBuilding(b.x,b.y,b.type,b.level||1,b.hp));
+  plots.forEach(q=>q.b=null);
+  buildings=(s.buildings||[])
+    .filter(b=>BUILDS[b.type] && plots[b.pi])
+    .map(b=>makeBuilding(plots[b.pi],b.type,b.level||1,b.hp));
   run=freshRunMods();
   applyHeroBase(); hero.hp=clamp(s.heroHp||hero.max,1,hero.max);
   return true;
@@ -607,12 +598,50 @@ function distToPath(px,py,path){
 const LANES = LANE_DEFS.map((d,i)=>({...d, i, path:smoothPath(d.pts)}));
 function onAnyPath(px,py,limit){ for(const l of LANES) if(distToPath(px,py,l.path)<limit) return true; return false }
 
-function makeBuilding(bx,by,type,level=1,hp){
+function makeBuilding(plot,type,level=1,hp){
   const cfg=BUILDS[type];
   const max=Math.round(cfg.hp*Math.pow(1.5,level-1));
-  return {x:bx,y:by,type,level,r:cfg.r+(level-1)*2,hp:hp!=null?clamp(hp,1,max):max,max,
-          cd:Math.random()*.6, flash:0, born:0, seed:Math.random()*10, aim:0};
+  const b={x:plot.x,y:plot.y,type,level,pi:plots.indexOf(plot),
+    r:cfg.r+(level-1)*2,hp:hp!=null?clamp(hp,1,max):max,max,
+    cd:Math.random()*.6, flash:0, born:0, seed:Math.random()*10, aim:0};
+  plot.b=b;
+  return b;
 }
+/* Feste Bauplätze: entlang der Wege und im Ring um die Burg */
+let plots=[];
+function tryPlot(px,py,lane){
+  if(px<150||py<150||px>MAP.w-150||py>MAP.h-150) return false;
+  const d=Math.hypot(px-KEEP.x,py-KEEP.y);
+  if(d<BUILD_MIN||d>BUILD_MAX) return false;
+  if(Math.hypot(px-LAKE.x,py-LAKE.y)<LAKE.r+44) return false;
+  if(onAnyPath(px,py,60)) return false;
+  if(plots.some(q=>Math.hypot(q.x-px,q.y-py)<96)) return false;
+  if(trees.some(t=>Math.hypot(t.x-px,t.y-py)<46*t.s)) return false;
+  plots.push({x:px,y:py,lane,b:null,seed:plots.length*1.7});
+  return true;
+}
+function spawnPlots(){
+  plots=[];
+  const rnd=mulberry32(4242);
+  /* je Angriffsweg bis zu vier Plätze seitlich der Annäherung */
+  for(const l of LANES){
+    let placed=0;
+    for(let i=l.path.length-2; i>=0 && placed<4; i-=6){
+      const [px,py]=l.path[i], [ax,ay]=l.path[i+1];
+      const nx=-(py-ay), ny=(px-ax), nl=Math.hypot(nx,ny)||1;
+      for(const side of (rnd()<.5?[-1,1]:[1,-1])){
+        if(tryPlot(px+nx/nl*side*74, py+ny/nl*side*74, l.i)){ placed++; break }
+      }
+    }
+  }
+  /* Ring um die Burg auffüllen */
+  for(let k=0;k<160 && plots.length<16;k++){
+    const a=rnd()*TAU, d=BUILD_MIN+30+rnd()*(BUILD_MAX-BUILD_MIN-70);
+    tryPlot(KEEP.x+Math.cos(a)*d, KEEP.y+Math.sin(a)*d, -1);
+  }
+}
+const freePlots = () => plots.filter(p=>!p.b);
+
 function spawnOres(){
   ores=[]; let guard=0;
   while(ores.length<6 && guard++<600){
@@ -623,6 +652,7 @@ function spawnOres(){
     if(Math.hypot(ox-KEEP.x,oy-KEEP.y)<175) continue;
     if(ores.some(o=>Math.hypot(o.x-ox,o.y-oy)<150)) continue;
     if(buildings.some(b=>Math.hypot(b.x-ox,b.y-oy)<b.r+50)) continue;
+    if(plots.some(q=>Math.hypot(q.x-ox,q.y-oy)<70)) continue;
     ores.push({x:ox,y:oy,work:0,need:1.9,done:false,seed:Math.random()*10});
   }
 }
@@ -866,14 +896,17 @@ function buildWaves(){
       else if(night>=2 && r<.46) kind='bow';
       arr.push({lane:lanes[(i+w)%lanes.length], kind});
     }
-    if(w===W-1 && night%3===0) arr.push({lane:lanes[lanes.length-1], kind:'boss'});
+    if(w===W-1){                                   /* die finale Welle hat immer Zähne */
+      if(night%3===0) arr.push({lane:lanes[lanes.length-1], kind:'boss'});
+      else if(night>=2) arr.push({lane:lanes[(w+1)%lanes.length], kind:'inqui'});
+    }
     waves.push(arr);
   }
   return waves;
 }
 function startNight(){
   if(phase==='night') return;
-  phase='night'; cancelBuild(); closePopup();
+  phase='night'; closeBuildPanel(); closePopup();
   run.cards=[]; nightKills=0;
   waveQueue=buildWaves(); waveTotal=waveQueue.length; waveIdx=0; betweenWaves=0;
   hero.frenzyBar=0; hero.frenzy=0; hero.novaCd=3;
@@ -884,6 +917,7 @@ function startNight(){
 function startWave(){
   const wave=waveQueue[waveIdx];
   if(!wave) return;
+  if(waveIdx===waveTotal-1 && waveTotal>1){ toast('FINALE WELLE'); shake=Math.max(shake,7) }
   const list = run.horde>1 ? wave.concat(wave.map(w=>({...w}))) : wave;
   list.forEach((e,i)=>spawnEnemy(e.lane, e.kind, .2+i*(2.4/Math.max(1,list.length))));
   waveAlive=list.length;
@@ -988,66 +1022,49 @@ function heroTakes(dmg,src){
   shake=Math.max(shake,5);
 }
 
-/* ------------------------------------------------------------- Bauen */
-const build = {type:null, x:0, y:0, ok:false, msg:''};
-function validateGhost(){
-  const cfg=BUILDS[build.type]; if(!cfg){ build.ok=false; return }
-  const d=Math.hypot(build.x-KEEP.x, build.y-KEEP.y);
-  if(state.gold<cfg.gold)                      { build.ok=false; build.msg='Zu wenig Gold ('+cfg.gold+'🪙)'; return }
-  if(d>BUILD_MAX)                              { build.ok=false; build.msg='Zu weit von der Burg';  return }
-  if(d<BUILD_MIN)                              { build.ok=false; build.msg='Zu nah an der Burg';    return }
-  if(Math.hypot(build.x-LAKE.x,build.y-LAKE.y)<LAKE.r+20){ build.ok=false; build.msg='Im Blutteich'; return }
-  if(onAnyPath(build.x,build.y,44+cfg.r*.4))   { build.ok=false; build.msg='Weg blockiert';         return }
-  if(buildings.some(b=>Math.hypot(build.x-b.x,build.y-b.y)<b.r+cfg.r+10)){ build.ok=false; build.msg='Platz belegt'; return }
-  if(trees.some(t=>Math.hypot(build.x-t.x,build.y-t.y)<28*t.s+cfg.r)){ build.ok=false; build.msg='Etwas steht im Weg'; return }
-  if(ores.some(o=>!o.done&&Math.hypot(build.x-o.x,build.y-o.y)<24+cfg.r)){ build.ok=false; build.msg='Goldader im Weg'; return }
-  build.ok=true; build.msg='Platz frei';
+/* ------------------------------------------------------- Bauen am Bauplatz */
+let plotTarget=null;
+function showVeil(on){ $('#veil').classList.toggle('hidden', !on) }
+function anyPanelOpen(){
+  return !$('#popup').classList.contains('hidden') || !$('#buildPanel').classList.contains('hidden');
 }
-function selectBuild(type){
+function openBuildPanel(plot){
+  closePopup();
+  plotTarget=plot;
+  const lane = plot.lane>=0 ? LANES[plot.lane] : null;
+  $('#bpTitle').textContent = lane ? 'Bauplatz an '+lane.short.toLowerCase().replace(/^\w/,c=>c.toUpperCase()) : 'Bauplatz an der Burg';
+  $('#bpHint').innerHTML = lane
+    ? 'Liegt am Weg <b style="color:'+lane.color+'">'+lane.icon+' '+lane.name+'</b>. Was soll hier entstehen?'
+    : 'Dicht an der Burg. Was soll hier entstehen?';
+  $('#bpList').innerHTML = BUILD_ORDER.map(k=>{
+    const b=BUILDS[k], poor=state.gold<b.gold;
+    const eff = b.income ? '+'+b.income+' 🪙/s' : k==='bat' ? 'Fernkampf 250' : k==='altar' ? 'Nahbereich, leuchtet' : 'Hält Jäger auf';
+    return '<button class="bprow'+(poor?' poor':'')+'" data-b="'+k+'"><i>'+b.icon+'</i>'+
+      '<b>'+b.name+'<u>'+eff+'</u></b><s>'+b.gold+' 🪙</s></button>';
+  }).join('');
+  all('#bpList .bprow').forEach(el=>el.onclick=()=>buildOnPlot(el.dataset.b));
+  $('#buildPanel').classList.remove('hidden'); showVeil(true);
+}
+function closeBuildPanel(){ plotTarget=null; $('#buildPanel').classList.add('hidden'); showVeil(anyPanelOpen()) }
+function buildOnPlot(type){
+  const plot=plotTarget, cfg=BUILDS[type];
+  if(!plot||plot.b||!cfg) return;
   if(phase!=='day'){ toast('NUR IN DER DÄMMERUNG BAUEN'); return }
-  if(build.type===type){ cancelBuild(); return }
-  closePopup(); build.type=type;
-  let px=hero.x+Math.cos(hero.angle)*95, py=hero.y+Math.sin(hero.angle)*95;
-  const d=Math.hypot(px-KEEP.x,py-KEEP.y);
-  if(d>BUILD_MAX||d<BUILD_MIN){
-    const t=clamp(d,BUILD_MIN+20,BUILD_MAX-20), a=Math.atan2(py-KEEP.y,px-KEEP.x);
-    px=KEEP.x+Math.cos(a)*t; py=KEEP.y+Math.sin(a)*t;
-  }
-  build.x=px; build.y=py; validateGhost(); syncBuildUI();
+  if(state.gold<cfg.gold){ toast('NICHT GENUG GOLD'); return }
+  state.gold-=cfg.gold;
+  const b=makeBuilding(plot,type,1); b.born=.6; buildings.push(b);
+  burst(plot.x,plot.y,'#d7b36d',22,180); shake=5;
+  toast(cfg.name.toUpperCase()+' GEBAUT');
+  closeBuildPanel(); saveRun(); refreshHUD(true);
 }
-function moveGhost(wx,wy){
-  if(!build.type) return;
-  build.x=clamp(wx,100,MAP.w-100); build.y=clamp(wy,100,MAP.h-100);
-  validateGhost(); syncBuildUI();
-}
-function cancelBuild(){ build.type=null; syncBuildUI() }
-function confirmBuild(){
-  validateGhost();
-  if(!build.ok){ toast(build.msg.toUpperCase()); return }
-  state.gold-=BUILDS[build.type].gold;
-  const b=makeBuilding(build.x,build.y,build.type,1); b.born=.6; buildings.push(b);
-  burst(build.x,build.y,'#d7b36d',20,170); shake=5; saveRun();
-  validateGhost(); syncBuildUI(); refreshHUD(true);
-}
-/* Kostenloses Gebäude aus einer Karte: freier Platz nahe der Burg */
+/* Kostenloses Gebäude aus einer Karte: irgendein freier Bauplatz */
 function freeBuild(type){
-  const cfg=BUILDS[type];
-  for(let ring=0; ring<7; ring++){
-    const rr=BUILD_MIN+40+ring*55;
-    for(let k=0;k<18;k++){
-      const a=Math.random()*TAU;
-      const px=KEEP.x+Math.cos(a)*rr, py=KEEP.y+Math.sin(a)*rr;
-      if(px<120||py<120||px>MAP.w-120||py>MAP.h-120) continue;
-      if(Math.hypot(px-LAKE.x,py-LAKE.y)<LAKE.r+20) continue;
-      if(onAnyPath(px,py,44+cfg.r*.4)) continue;
-      if(buildings.some(b=>Math.hypot(px-b.x,py-b.y)<b.r+cfg.r+10)) continue;
-      if(trees.some(t=>Math.hypot(px-t.x,py-t.y)<28*t.s+cfg.r)) continue;
-      const b=makeBuilding(px,py,type,1); b.born=.6; buildings.push(b);
-      burst(px,py,'#ffd08a',22,180);
-      return true;
-    }
-  }
-  return false;
+  const free=freePlots();
+  if(!free.length) return false;
+  const plot=free[Math.floor(Math.random()*free.length)];
+  const b=makeBuilding(plot,type,1); b.born=.6; buildings.push(b);
+  burst(plot.x,plot.y,'#ffd08a',22,180);
+  return true;
 }
 let popupTarget=null;
 const upgradeCost = b => Math.round(BUILDS[b.type].gold*.6)*b.level;
@@ -1066,9 +1083,9 @@ function openPopup(b){
   if(b.level>=3){ up.textContent='HÖCHSTE STUFE'; up.disabled=true }
   else if(phase!=='day'){ up.textContent='NUR IN DER DÄMMERUNG'; up.disabled=true }
   else { const cost=upgradeCost(b); up.textContent='AUSBAUEN · '+cost+' 🪙'; up.disabled=state.gold<cost }
-  $('#popup').classList.remove('hidden');
+  $('#popup').classList.remove('hidden'); showVeil(true);
 }
-function closePopup(){ popupTarget=null; $('#popup').classList.add('hidden') }
+function closePopup(){ popupTarget=null; $('#popup').classList.add('hidden'); showVeil(anyPanelOpen()) }
 function doUpgrade(){
   const b=popupTarget; if(!b||b.level>=3||phase!=='day') return;
   const cost=upgradeCost(b);
@@ -1250,7 +1267,10 @@ function update(dtRaw){
     }
     enemies=enemies.filter(e=>!e.dead);
     const lost=buildings.filter(b=>b.hp<=0);
-    if(lost.length){ lost.forEach(b=>{burst(b.x,b.y,'#6b5a42',22,200); smoke(b.x,b.y,6)}); shake=8 }
+    if(lost.length){
+      lost.forEach(b=>{ burst(b.x,b.y,'#6b5a42',22,200); smoke(b.x,b.y,6); if(plots[b.pi]) plots[b.pi].b=null });
+      shake=8;
+    }
     buildings=buildings.filter(b=>b.hp>0);
     if(hero.hp<=0||KEEP.hp<=0){ gameOver(); return }
     if(!enemies.length && betweenWaves<=0){ waveCleared(); return }
@@ -1836,29 +1856,43 @@ function drawEnemy(e){
   x.fillText(lane.icon, e.x, e.y-e.r-e.r*1.6-14); x.globalAlpha=1;
 }
 
-/* ------------------------------------------------------- Bau-Vorschau */
-function drawGhost(){
-  if(!build.type) return;
-  const cfg=BUILDS[build.type];
+/* --------------------------------------------------------- Bauplätze */
+let nearestPlot=null;
+function pickNearestPlot(){
+  nearestPlot=null; let best=1e9;
+  for(const q of plots){ if(q.b) continue;
+    const d=Math.hypot(hero.x-q.x,hero.y-q.y); if(d<best){best=d;nearestPlot=q} }
+}
+function drawPlot(q){
+  if(q.b) return;
+  const pulse=.5+.5*Math.sin(T*2.2+q.seed);
+  const near=Math.hypot(hero.x-q.x,hero.y-q.y);
+  const lane=q.lane>=0?LANES[q.lane]:null;
+  const col=lane?lane.color:'#e8c06a';
   x.save();
-  x.strokeStyle='rgba(232,192,106,.30)'; x.lineWidth=2; x.setLineDash([12,10]);
-  x.beginPath(); x.arc(KEEP.x,KEEP.y,BUILD_MAX,0,TAU); x.stroke();
-  x.beginPath(); x.arc(KEEP.x,KEEP.y,BUILD_MIN,0,TAU); x.stroke();
-  x.setLineDash([]);
-  const col = build.ok ? '#7fe08a' : '#ff7b63';
-  x.globalAlpha=.30; x.fillStyle=col;
-  x.beginPath(); x.arc(build.x,build.y,cfg.r+8,0,TAU); x.fill();
-  x.globalAlpha=1; x.strokeStyle=col; x.lineWidth=3;
-  x.beginPath(); x.arc(build.x,build.y,cfg.r+8,0,TAU); x.stroke();
-  x.globalAlpha=.75;
-  drawBuilding({x:build.x,y:build.y,type:build.type,level:1,r:cfg.r,hp:1,max:1,born:0,flash:0,seed:2,aim:0});
-  x.globalAlpha=1;
-  if(build.type==='bat'||build.type==='altar'){
-    const rng=build.type==='bat'?268:152;
-    x.strokeStyle='rgba(255,255,255,.22)'; x.lineWidth=2; x.setLineDash([8,8]);
-    x.beginPath(); x.arc(build.x,build.y,rng,0,TAU); x.stroke(); x.setLineDash([]);
-  }
+  x.globalAlpha = phase==='day' ? .55+pulse*.35 : .22;
+  /* Grundfläche als Raute, wie ein abgesteckter Platz */
+  x.fillStyle='rgba(20,14,12,.35)';
+  x.beginPath(); x.moveTo(q.x,q.y-24); x.lineTo(q.x+42,q.y); x.lineTo(q.x,q.y+24); x.lineTo(q.x-42,q.y);
+  x.closePath(); x.fill();
+  x.strokeStyle=col; x.lineWidth=2.5; x.setLineDash([9,7]); x.stroke(); x.setLineDash([]);
+  /* Eckpflöcke */
+  x.fillStyle='rgba(120,100,72,.9)';
+  for(const c of [[-42,0],[42,0],[0,-24],[0,24]]) x.fillRect(q.x+c[0]-2,q.y+c[1]-6,4,10);
+  /* Hammer-Symbol */
+  x.globalAlpha = phase==='day' ? .75+pulse*.25 : .3;
+  x.fillStyle=col;
+  x.save(); x.translate(q.x,q.y-6); x.rotate(-.5);
+  x.fillRect(-2,-2,4,17); x.fillRect(-9,-10,18,8);
   x.restore();
+  x.restore();
+  /* Nur der nächstgelegene Platz bekommt eine Beschriftung, sonst wird es unruhig */
+  if(phase==='day' && q===nearestPlot && near<260){
+    x.globalAlpha=clamp((260-near)/70,0,1);
+    x.fillStyle='rgba(255,226,190,.95)'; x.font='900 12px system-ui'; x.textAlign='center';
+    x.fillText('BAUPLATZ', q.x, q.y+40);
+    x.globalAlpha=1;
+  }
 }
 function drawLaneMarkers(){
   const act=activeLanes();
@@ -1890,8 +1924,9 @@ function draw(){
 
   if(bg) x.drawImage(bg,0,0);
   drawLaneMarkers();
+  pickNearestPlot();
+  for(const q of plots) drawPlot(q);
   if(phase==='day') for(const o of ores) drawOre(o);
-  drawGhost();
 
   const list=[];
   const vx0=cam.x-W/(2*zoom)-120, vx1=cam.x+W/(2*zoom)+120;
@@ -2072,9 +2107,12 @@ function drawMinimap(){
     }
     g.globalAlpha=1;
   }
+  /* Freie Bauplätze */
+  g.strokeStyle='rgba(232,192,106,.55)'; g.lineWidth=1;
+  for(const q of plots) if(!q.b) g.strokeRect(q.x*sx-2,q.y*sy-2,4,4);
   /* Gebäude */
   g.fillStyle='#caa46a';
-  for(const b of buildings) g.fillRect(b.x*sx-1.4,b.y*sy-1.4,2.8,2.8);
+  for(const b of buildings) g.fillRect(b.x*sx-1.8,b.y*sy-1.8,3.6,3.6);
   /* Burg */
   g.fillStyle='#ffd27d';
   g.fillRect(KEEP.x*sx-4,KEEP.y*sy-4,8,8);
@@ -2100,8 +2138,7 @@ mmEl.onclick=e=>{ e.preventDefault(); mmEl.classList.toggle('small') };
 /* ===================================================== 6) HUD & Karten */
 const ui={
   gold:$('#gold'), income:$('#income'), phase:$('#phase'), phaseName:$('#phaseName'), bar:$('#phaseBar'),
-  objective:$('#objective'), lanes:$('#lanes'), startNight:$('#startNight'),
-  buildbar:$('#buildbar'), rightcol:$('#rightcol'), confirm:$('#confirm')
+  objective:$('#objective'), lanes:$('#lanes'), startNight:$('#startNight')
 };
 let lastHUD='';
 function incomePerSec(){
@@ -2127,20 +2164,17 @@ function refreshHUD(force){
   ui.bar.style.width = (phase==='day'
       ? clamp(phaseTime/DAY_LEN,0,1)*100
       : waveTotal ? clamp(1-(waveIdx/waveTotal),0,1)*100 : 0) + '%';
-  all('.build').forEach(b=>{
-    const cfg=BUILDS[b.dataset.build];
-    b.classList.toggle('poor', state.gold<cfg.gold);
-    b.classList.toggle('selected', build.type===b.dataset.build);
-  });
-  const key=[phase,night,waveIdx,meta.rank,buildings.length,build.type,enemies.length,Math.floor(state.gold)].join('|');
+  if(!$('#buildPanel').classList.contains('hidden'))
+    all('#bpList .bprow').forEach(el=>el.classList.toggle('poor', state.gold<BUILDS[el.dataset.b].gold));
+  const key=[phase,night,waveIdx,waveTotal,meta.rank,buildings.length,enemies.length,Math.floor(state.gold)].join('|');
   if(!force && key===lastHUD) return;
   lastHUD=key;
   ui.phase.classList.toggle('night', phase==='night');
   ui.phaseName.textContent = phase==='day'
       ? 'DÄMMERUNG · TAG '+night
-      : 'NACHT '+night+' · WELLE '+Math.min(waveIdx+1,waveTotal)+'/'+waveTotal;
+      : (waveIdx+1>=waveTotal ? 'NACHT '+night+' · FINALE WELLE'
+                              : 'NACHT '+night+' · WELLE '+(waveIdx+1)+'/'+waveTotal);
   ui.startNight.classList.toggle('hidden', phase!=='day');
-  ui.buildbar.classList.toggle('hidden', phase!=='day');
   const act=activeLanes();
   ui.lanes.innerHTML=LANES.map(l=>{
     const on=act.includes(l);
@@ -2151,11 +2185,12 @@ function refreshHUD(force){
   }).join('');
   let msg;
   if(phase==='day'){
-    msg = build.type
-      ? 'Karte antippen, um <b>'+BUILDS[build.type].name+'</b> zu setzen — dann ✓'
-      : 'Heute Nacht: <b>'+act.map(l=>l.icon+' '+l.name).join(' · ')+'</b> &nbsp;|&nbsp; Gold aus 🏚️⛲ und ⛏ Goldadern';
+    msg = 'Heute Nacht: <b>'+act.map(l=>l.icon+' '+l.name).join(' · ')+'</b><br>'+
+          'Tippe einen <b>🔨 Bauplatz</b> an ('+freePlots().length+' frei) · Gold aus 🏚️⛲ und ⛏ Goldadern';
   } else {
-    msg = '<b>'+enemies.length+'</b> Jäger im Feld · Welle <b>'+Math.min(waveIdx+1,waveTotal)+'/'+waveTotal+'</b>'+
+    const fin = waveIdx+1>=waveTotal;
+    msg = '<b>'+enemies.length+'</b> Jäger im Feld · '+
+          (fin?'<b style="color:#ff8fa3">FINALE WELLE</b>':'Welle <b>'+(waveIdx+1)+'/'+waveTotal+'</b>')+
           (run.cards.length?' · '+run.cards.length+(run.cards.length===1?' Karte':' Karten')+' aktiv':'');
   }
   if(msg!==ui.objective.innerHTML){
@@ -2164,19 +2199,6 @@ function refreshHUD(force){
     clearTimeout(refreshHUD._f);
     refreshHUD._f=setTimeout(()=>ui.objective.classList.add('dim'),7000);
   }
-}
-function syncBuildUI(){
-  const on=!!build.type;
-  ui.confirm.classList.toggle('hidden',!on);
-  ui.rightcol.classList.toggle('hidden',on);
-  if(on){
-    const cfg=BUILDS[build.type];
-    $('#cName').textContent=cfg.name+' · '+cfg.gold+'🪙';
-    $('#cDesc').textContent=cfg.income ? ('+'+cfg.income+'🪙/s') : cfg.desc.slice(0,34);
-    const st=$('#cState'); st.textContent=build.msg; st.className=build.ok?'ok':'';
-    $('#cOk').disabled=!build.ok;
-  }
-  refreshHUD(true);
 }
 /* ------------------------------------------------- Rangliste & Gaben */
 function renderRankList(sel='#rankList'){
@@ -2251,8 +2273,11 @@ function rollCards(){
   $('#rerollBtn').textContent = run.reroll>0 ? '🔄 Neue Karten ('+run.reroll+'×)' : '🔄 Verbraucht';
 }
 function showCards(){
+  const last = waveIdx+1>=waveTotal;
   $('#cardTitle').textContent='WELLE '+waveIdx+' ÜBERSTANDEN';
-  $('#cardSub').textContent='Welle '+(waveIdx+1)+' von '+waveTotal+' wartet — wähle eine Gabe für diese Nacht';
+  $('#cardSub').innerHTML = last
+    ? 'Gleich kommt die <b style="color:#ff8fa3">FINALE WELLE</b> — wähle eine Gabe'
+    : 'Welle '+(waveIdx+1)+' von '+waveTotal+' wartet — wähle eine Gabe für diese Nacht';
   rollCards();
   paused=true;
   $('#cardScreen').classList.remove('hidden');
@@ -2291,20 +2316,9 @@ function applyCard(c){
 }
 
 /* ===================================================== 7) Eingabe & Start */
-ui.buildbar.innerHTML = BUILD_ORDER.map(k=>{
-  const b=BUILDS[k];
-  return '<button class="build" type="button" data-build="'+k+'">'+b.icon+
-    '<small>'+b.short+'</small><i class="cost">'+b.gold+'🪙</i></button>';
-}).join('');
-all('.build').forEach(b=>b.addEventListener('click',e=>{ e.preventDefault(); selectBuild(b.dataset.build) }));
-
 const joyRect = () => $('#joystick').getBoundingClientRect();
 function inJoyZone(cx,cy){
   const r=joyRect();
-  if(build.type){
-    const dx=cx-(r.left+r.width/2), dy=cy-(r.top+r.height/2);
-    return Math.hypot(dx,dy) < r.width*.62;
-  }
   return cx < Math.min(W*.52, r.right+70) && cy > r.top-60;
 }
 function joyStart(e){
@@ -2329,25 +2343,20 @@ c.addEventListener('pointerdown',e=>{
   if(inJoyZone(e.clientX,e.clientY)){ if(joyStart(e)){ e.preventDefault(); return } }
   mapPointer=e.pointerId;
   const p=worldPos(e.clientX,e.clientY);
-  if(build.type){ moveGhost(p.x,p.y); return }
-  const b=buildings.find(v=>Math.hypot(p.x-v.x,p.y-v.y)<v.r+22);
-  if(b){ openPopup(b); return }
+  const b=buildings.find(v=>Math.hypot(p.x-v.x,p.y-v.y)<v.r+24);
+  if(b){ closeBuildPanel(); openPopup(b); return }
+  const q=plots.find(v=>!v.b && Math.abs(p.x-v.x)/46 + Math.abs(p.y-v.y)/28 < 1.25);
+  if(q){ openBuildPanel(q); return }
   if(Math.hypot(p.x-KEEP.x,p.y-KEEP.y)<KEEP.r+30){ toast('BURG  '+Math.round(KEEP.hp)+'/'+KEEP.max); return }
-  closePopup();
+  closePopup(); closeBuildPanel();
 },{passive:false});
-addEventListener('pointermove',e=>{
-  if(joy.active&&e.pointerId===joy.id){ joyMove(e); return }
-  if(build.type && e.pointerId===mapPointer && e.target===c){
-    const p=worldPos(e.clientX,e.clientY); moveGhost(p.x,p.y);
-  }
-});
+addEventListener('pointermove',e=>{ if(joy.active&&e.pointerId===joy.id) joyMove(e) });
 addEventListener('pointerup',e=>{ joyEnd(e); if(e.pointerId===mapPointer) mapPointer=null });
 addEventListener('pointercancel',e=>{ joyEnd(e); if(e.pointerId===mapPointer) mapPointer=null });
 addEventListener('keydown',e=>{
   keys[e.key]=true;
-  if(e.key==='Escape'){ cancelBuild(); closePopup() }
+  if(e.key==='Escape'){ closePopup(); closeBuildPanel() }
   if(e.key===' '&&phase==='day'&&running){ e.preventDefault(); startNight() }
-  if(e.key==='Enter'&&build.type) confirmBuild();
 });
 addEventListener('keyup',e=>keys[e.key]=false);
 addEventListener('resize',()=>{ resize(); refreshHUD(true) });
@@ -2355,8 +2364,8 @@ addEventListener('orientationchange',()=>setTimeout(()=>{resize();refreshHUD(tru
 document.addEventListener('visibilitychange',()=>{ if(document.hidden){ saveRun(); saveMeta() } });
 addEventListener('contextmenu',e=>{ if(e.target===c) e.preventDefault() });
 
-$('#cOk').onclick=e=>{ e.preventDefault(); confirmBuild() };
-$('#cCancel').onclick=e=>{ e.preventDefault(); cancelBuild() };
+$('#bpClose').onclick=closeBuildPanel;
+$('#veil').onclick=()=>{ closePopup(); closeBuildPanel() };
 $('#pClose').onclick=closePopup;
 $('#pUp').onclick=doUpgrade;
 ui.startNight.onclick=()=>{ if(phase==='day') startNight() };
@@ -2390,6 +2399,7 @@ function newRun(){
   state.gold=140; state.xp=0; state.lvl=1; state.kills=0;
   KEEP.max=520; KEEP.hp=KEEP.max;
   buildings=[]; enemies=[]; shots=[]; particles=[]; numbers=[]; thralls=[];
+  plots.forEach(q=>q.b=null);
   waveQueue=[]; waveIdx=0; waveTotal=0; betweenWaves=0;
   run=freshRunMods();
   applyHeroBase();
@@ -2400,6 +2410,7 @@ function newRun(){
 function beginGame(resume){
   if(resume && loadRun()){
     phase='day'; phaseTime=DAY_LEN; darkness=0; enemies=[]; shots=[]; thralls=[];
+    closeBuildPanel(); closePopup();
     waveQueue=[]; waveIdx=0; waveTotal=0; betweenWaves=0;
     spawnOres();
   } else newRun();
@@ -2420,6 +2431,7 @@ run=freshRunMods();
 resize();
 buildBackground();
 spawnTrees();
+spawnPlots();
 applyHeroBase();
 spawnOres();
 renderRankList('#rankListStart');

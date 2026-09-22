@@ -22,11 +22,11 @@ und schaltest eine neue Fähigkeit frei:
 |------|------|-----------|
 | 🧍 Mensch | – | Sterblich — das Tageslicht macht dir nichts aus |
 | 🩸 Halbvampir | 120 | **Lebensraub** — 10 % deines Schadens heilen dich. Ab hier schwächt dich die Sonne |
-| 🦇 Vampir | 450 | **Nebelform** — jeder dritte Treffer geht durch dich hindurch |
-| 👑 Vampiradliger | 1 400 | **Blutdiener** — eine Fledermaus kämpft dauerhaft an deiner Seite |
-| 🏰 Vampirfürst | 3 800 | **Blutrausch** — volle Blutleiste löst 8 s doppelten Schaden und Tempo aus |
-| ✨ Himmlischer | 9 000 | **Blutmond** — alle 9 s eine Blutnova; die Sonne wirkt nicht mehr |
-| ⚡ Gottbezwinger | 20 000 | **Herrschaft** — alle Jäger in deiner Nähe verlieren 30 % Schaden und Tempo |
+| 🦇 Vampir | 420 | **Nebelform** — jeder dritte Treffer geht durch dich hindurch |
+| 👑 Vampiradliger | 1 150 | **Blutdiener** — eine Fledermaus kämpft dauerhaft an deiner Seite |
+| 🏰 Vampirfürst | 2 600 | **Blutrausch** — volle Blutleiste löst 8 s doppelten Schaden und Tempo aus |
+| ✨ Himmlischer | 5 400 | **Blutmond** — alle 9 s eine Blutnova; die Sonne wirkt nicht mehr |
+| ⚡ Gottbezwinger | 10 500 | **Herrschaft** — alle Jäger in deiner Nähe verlieren 30 % Schaden und Tempo |
 
 Mit dem Rang ändern sich **Aussehen und Werte des Helden** (Umhang, Kragen, Krone, Heiligenschein,
 Aura, Blutklaue statt Schwert) und **die Burg selbst wächst mit**: verfallene Burg ➜ Vampirburg ➜
@@ -35,9 +35,24 @@ Blutzitadelle.
 Zusätzlich vergibt jeder Stufenaufstieg im Kampf eine **Blutgabe** — ebenfalls dauerhaft
 (Schattenklaue, Rasender Puls, Untotes Herz, Nebelschritt, Blutlanze, Gier).
 
+## Bauen an festen Bauplätzen
+
+Gebaut wird nicht frei, sondern an **16 festen Bauplätzen**, die von Anfang an im Gelände
+abgesteckt sind (gestrichelte Raute mit 🔨). Vier davon liegen seitlich an jedem der drei
+Angriffswege — sie tragen dessen Farbe —, der Rest ringt sich um die Burg.
+
+* **Freien Bauplatz antippen** → Fenster mit allen fünf Gebäuden, Wirkung und Goldpreis. Auswählen baut sofort.
+* **Gebäude antippen** → Ausbau-Fenster mit Werten und Kosten, bis Stufe 3.
+* Fällt ein Gebäude, wird sein Bauplatz wieder frei.
+
+Weil die Plätze fest sind, ist die Frage nicht *wohin*, sondern *was wohin*: ein Fledermausturm
+am Weg, der heute Nacht angegriffen wird, ist viel wert — derselbe Turm am ruhigen Weg ist Gold
+zum Fenster hinaus.
+
 ## Die Nacht: Wellen und Karten
 
-Jede Nacht besteht aus **3 bis 7 Wellen**. Nach jeder überstandenen Welle wählst du **eine von drei
+Jede Nacht besteht aus **3 bis 7 Wellen**, die letzte ist die **finale Welle** — sie wird
+angekündigt und bringt ab Nacht 2 einen Inquisitor, in jeder dritten Nacht den Silberritter. Nach jeder überstandenen Welle wählst du **eine von drei
 Karten**, die nur für diese Nacht gilt:
 
 * **Zwei blaue Segen** — mehr Schaden, Gratis-Gebäude, Heilung, schwächere Jäger, Gold …
@@ -78,9 +93,8 @@ Weil die Kamera weit herausgezoomt ist, gibt es zwei Orientierungshilfen:
 
 * **Linker Daumen** (unten links) oder **WASD / Pfeiltasten**: Held bewegen
 * Held, Fledermaustürme, Blutaltäre und die **Wachen auf der Burgmauer** greifen automatisch an
-* **Bauen:** unten ein Gebäude wählen → auf die Karte tippen, um die Vorschau zu setzen → **✓** bestätigen
-  (grün = Platz frei, rot = Grund steht daneben). **✕** bricht ab.
-* **Ausbauen:** ein bestehendes Gebäude antippen → Infofenster mit Werten und Kosten (bis Stufe 3)
+* **Bauen und Ausbauen:** Bauplatz oder Gebäude antippen (siehe oben). Ein Tipp neben das
+  geöffnete Fenster schließt es wieder.
 * **Rangleiste oben links** oder **📜**: Heldenwerte, alle Ränge, Blutgaben und die Regeln
 * **🔍**: Zoomstufe · **×1 / ×2 / ×3**: Geschwindigkeit · **Leertaste**: Nacht starten · **Esc**: Bauen abbrechen
 
