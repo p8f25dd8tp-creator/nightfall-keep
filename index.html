@@ -531,7 +531,7 @@ const state = {gold:140, xp:0, lvl:1, kills:0};
 const hero  = {x:900, y:560, r:18, hp:110, max:110, cd:0, angle:2.2, flash:0, swing:0,
                step:0, moving:0, mist:0, hitCount:0, frenzy:0, frenzyBar:0, novaCd:0};
 let enemies=[], shots=[], particles=[], numbers=[], buildings=[], ores=[], trees=[], thralls=[];
-let waveQueue=[], waveIdx=0, waveTotal=0, waveAlive=0, nightKills=0, betweenWaves=0;
+let waveQueue=[], waveIdx=0, waveTotal=0, nightKills=0, betweenWaves=0;
 let keepAlarm=0;
 let run = null;                       // Nacht-Modifikatoren aus Karten
 let ascendQueue=[];
@@ -929,7 +929,6 @@ function startWave(){
   if(waveIdx===waveTotal-1 && waveTotal>1){ toast('FINALE WELLE'); shake=Math.max(shake,7) }
   const list = run.horde>1 ? wave.concat(wave.map(w=>({...w}))) : wave;
   list.forEach((e,i)=>spawnEnemy(e.lane, e.kind, .2+i*(1.7/Math.max(1,list.length))));
-  waveAlive=list.length;
 }
 function spawnEnemy(lane,kind,delay=0){
   const cfg=FOES[kind], s=lane.path[0];
@@ -2317,9 +2316,10 @@ function rollCards(){
 function showCards(){
   const last = waveIdx+1>=waveTotal;
   $('#cardTitle').textContent='WELLE '+waveIdx+' ÜBERSTANDEN';
-  $('#cardSub').innerHTML = last
-    ? 'Gleich kommt die <b style="color:#ff8fa3">FINALE WELLE</b> — wähle eine Gabe'
-    : 'Welle '+(waveIdx+1)+' von '+waveTotal+' wartet — wähle eine Gabe für diese Nacht';
+  $('#cardSub').innerHTML = (last
+      ? 'Gleich kommt die <b style="color:#ff8fa3">FINALE WELLE</b> — wähle eine Gabe'
+      : 'Welle '+(waveIdx+1)+' von '+waveTotal+' wartet — wähle eine Gabe für diese Nacht')
+    + '<br><span style="opacity:.7">'+nightKills+' Jäger in dieser Nacht gefallen</span>';
   rollCards();
   paused=true;
   $('#cardScreen').classList.remove('hidden');
