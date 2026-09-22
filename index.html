@@ -62,6 +62,15 @@
     .lane u{text-decoration:none;opacity:.72;font-weight:700}
     .lane.off{opacity:.34;filter:grayscale(.85)}
 
+    .minimap{display:block;margin:8px 0 0 auto;padding:0;width:104px;height:88px;border-radius:14px;overflow:hidden;
+      border:1px solid var(--line);background:rgba(10,5,9,.82);box-shadow:0 5px 18px #000a;pointer-events:auto;
+      position:relative;transition:width .18s,height .18s}
+    .minimap canvas{width:100%;height:100%;display:block}
+    .minimap .mmlabel{position:absolute;right:6px;bottom:3px;font-size:8px;font-weight:800;letter-spacing:.1em;
+      color:#cdb9c2;text-shadow:0 1px 3px #000;pointer-events:none}
+    .minimap.small{width:38px;height:38px}
+    .minimap.small canvas{opacity:0}
+    .minimap.small:after{content:"🗺";position:absolute;inset:0;display:grid;place-items:center;font-size:17px}
     .hint{margin:7px auto 0;max-width:min(92vw,430px);background:rgba(12,6,11,.74);border:1px solid #ffffff14;border-radius:14px;
       padding:5px 11px;font-size:11px;line-height:1.35;color:#ecdfd2;text-shadow:0 1px 3px #000;text-align:center;
       backdrop-filter:blur(6px);transition:opacity .5s;opacity:1}
@@ -217,6 +226,7 @@
       .build{width:60px;height:66px;font-size:21px}
       .pill{padding:5px 8px;font-size:12px}
       .joystick{width:118px;height:118px;left:10px}
+      .minimap{width:92px;height:78px}
       .stick{width:48px;height:48px;left:35px;top:35px}
     }
     @media (orientation:landscape) and (max-height:540px){
@@ -245,6 +255,9 @@
       .ascend .ability{font-size:11.5px;padding:10px 12px;line-height:1.4}
       .ascend .ability b{font-size:13px}
       .ascend .primary{margin-top:12px!important}
+      /* Im Querformat reicht der Platz im Fluss nicht: die Geschwindigkeits-
+         knöpfe kämen sonst über die Minimap. Deshalb fest oben rechts. */
+      .minimap{position:fixed;right:10px;top:calc(var(--safe-t) + 56px);margin:0;width:88px;height:74px}
       .cards h2{font-size:clamp(15px,4vw,19px)}
       .cards .sub{font-size:11px;margin-bottom:2px}
     }
@@ -274,6 +287,10 @@
     </div>
     <div class="lanes" id="lanes"></div>
     <div class="hint" id="objective">Baue deine Siedlung aus</div>
+    <button class="minimap" id="minimap" aria-label="Übersichtskarte">
+      <canvas id="minimapC" width="208" height="176"></canvas>
+      <span class="mmlabel" id="mmLabel">TAL</span>
+    </button>
   </div>
 
   <div class="buildbar" id="buildbar"></div>
@@ -1272,6 +1289,7 @@ function update(dtRaw){
   if(Math.random()<dt*3) for(const b of buildings)
     if((b.type==='hut'||b.type==='well')&&Math.random()<.3) smoke(b.x+10,b.y-34,1);
   shake*=.86;
+  if((++mmTick%3)===0) drawMinimap();
   refreshHUD();
 }
 
@@ -1986,18 +2004,29 @@ function draw(){
     x.globalAlpha=1;
   }
   const edge=(wx,wy,col,label)=>{
-    const s=screenPos(wx,wy), m=42;
+    const s=screenPos(wx,wy), m=46;
     if(s.x>m&&s.x<W-m&&s.y>m&&s.y<H-m) return;
     const cx=W/2, cy=H/2, a=Math.atan2(s.y-cy,s.x-cx);
     const r=Math.min((W/2-m)/Math.abs(Math.cos(a)||1e-4),(H/2-m)/Math.abs(Math.sin(a)||1e-4));
-    const px=cx+Math.cos(a)*r, py=cy+Math.sin(a)*r;
+    const px=clamp(cx+Math.cos(a)*r,30,W-30), py=clamp(cy+Math.sin(a)*r,34,H-30);
+    const dist=Math.round(Math.hypot(wx-hero.x,wy-hero.y)/20);   /* 20 Einheiten = 1 m */
     x.save(); x.translate(px,py); x.rotate(a);
-    x.globalAlpha=.85; x.fillStyle=col;
-    x.beginPath(); x.moveTo(13,0); x.lineTo(-8,-8); x.lineTo(-8,8); x.closePath(); x.fill();
+    x.globalAlpha=.9; x.fillStyle=col;
+    x.beginPath(); x.moveTo(15,0); x.lineTo(-9,-9); x.lineTo(-9,9); x.closePath(); x.fill();
+    x.strokeStyle='rgba(0,0,0,.5)'; x.lineWidth=1.5; x.stroke();
     x.restore();
-    if(label){ x.globalAlpha=.9; x.fillStyle=col; x.font='900 11px system-ui';
-      x.fillText(label, clamp(px,26,W-26), clamp(py+(py<H/2?24:-14),18,H-10)) }
+    /* Marke mit Zahl und Entfernung, wie im Vorbild */
+    const ly=py<H/2 ? py+22 : py-26;
     x.globalAlpha=1;
+    x.fillStyle='rgba(12,6,11,.86)'; x.strokeStyle=col; x.lineWidth=1.4;
+    const bw=label?40:30;
+    x.beginPath();
+    if(x.roundRect) x.roundRect(px-bw/2, ly-9, bw, 26, 8); else x.rect(px-bw/2, ly-9, bw, 26);
+    x.fill(); x.stroke();
+    x.fillStyle=col; x.font='900 12px system-ui'; x.textAlign='center';
+    x.fillText(label||'', px, ly+2);
+    x.fillStyle='rgba(240,228,232,.92)'; x.font='800 10px system-ui';
+    x.fillText(dist+'m', px, ly+13);
   };
   if(phase==='night'){
     const seen={};
@@ -2010,6 +2039,63 @@ function draw(){
   vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,.26)');
   x.fillStyle=vg; x.fillRect(0,0,W,H);
 }
+
+/* ------------------------------------------------------------ Minimap */
+const mmEl=$('#minimap'), mmCv=$('#minimapC'), mmCx=mmCv.getContext('2d');
+let mmTick=0;
+function drawMinimap(){
+  if(mmEl.classList.contains('small')) return;
+  const w=mmCv.width, h=mmCv.height, sx=w/MAP.w, sy=h/MAP.h;
+  const g=mmCx;
+  g.clearRect(0,0,w,h);
+  /* Grund und Felsrand */
+  g.fillStyle = darkness>.45 ? '#161a20' : '#2c4433';
+  g.fillRect(0,0,w,h);
+  g.fillStyle='#0e0c12';
+  g.fillRect(0,0,w,EDGE*sy); g.fillRect(0,h-EDGE*sy,w,EDGE*sy);
+  g.fillRect(0,0,EDGE*sx,h); g.fillRect(w-EDGE*sx,0,EDGE*sx,h);
+  /* Blutteich */
+  g.fillStyle='#5d1626';
+  g.beginPath(); g.ellipse(LAKE.x*sx,LAKE.y*sy,LAKE.r*sx,LAKE.r*.78*sy,.2,0,TAU); g.fill();
+  /* Angriffswege */
+  const act=activeLanes();
+  for(const l of LANES){
+    g.strokeStyle=l.color; g.globalAlpha=act.includes(l)?.95:.3;
+    g.lineWidth=act.includes(l)?2.6:1.6; g.lineCap='round'; g.lineJoin='round';
+    g.beginPath();
+    l.path.forEach((p,i)=>i?g.lineTo(p[0]*sx,p[1]*sy):g.moveTo(p[0]*sx,p[1]*sy));
+    g.stroke();
+    if(act.includes(l)){                       /* Eingang markieren */
+      const [ex,ey]=l.path[0];
+      g.globalAlpha=.55+.45*Math.sin(T*3+l.i);
+      g.fillStyle=l.color; g.beginPath(); g.arc(ex*sx,ey*sy,3.4,0,TAU); g.fill();
+    }
+    g.globalAlpha=1;
+  }
+  /* Gebäude */
+  g.fillStyle='#caa46a';
+  for(const b of buildings) g.fillRect(b.x*sx-1.4,b.y*sy-1.4,2.8,2.8);
+  /* Burg */
+  g.fillStyle='#ffd27d';
+  g.fillRect(KEEP.x*sx-4,KEEP.y*sy-4,8,8);
+  g.strokeStyle='#4a2a14'; g.lineWidth=1; g.strokeRect(KEEP.x*sx-4,KEEP.y*sy-4,8,8);
+  /* Jäger */
+  for(const e of enemies){
+    if(e.spawn>0) continue;
+    g.fillStyle = e.kind==='boss' ? '#ffffff' : (LANES[e.lane]||LANES[0]).color;
+    g.beginPath(); g.arc(e.x*sx,e.y*sy, e.kind==='boss'?3.4:2.2, 0, TAU); g.fill();
+  }
+  /* Sichtfeld */
+  g.strokeStyle='rgba(255,255,255,.4)'; g.lineWidth=1.2;
+  g.strokeRect((cam.x-W/(2*zoom))*sx,(cam.y-H/(2*zoom))*sy,(W/zoom)*sx,(H/zoom)*sy);
+  /* Held */
+  const hp=.5+.5*Math.sin(T*4);
+  g.fillStyle='rgba(255,90,120,'+(.25+hp*.3)+')';
+  g.beginPath(); g.arc(hero.x*sx,hero.y*sy,6.5,0,TAU); g.fill();
+  g.fillStyle='#fff'; g.strokeStyle='#c9314a'; g.lineWidth=1.6;
+  g.beginPath(); g.arc(hero.x*sx,hero.y*sy,3.2,0,TAU); g.fill(); g.stroke();
+}
+mmEl.onclick=e=>{ e.preventDefault(); mmEl.classList.toggle('small') };
 
 /* ===================================================== 6) HUD & Karten */
 const ui={

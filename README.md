@@ -64,6 +64,16 @@ Verteidigung aus. An jedem Wegende steht eine Kapelle: von dort kommen die Jäge
 **Die Jäger:** Fackelträger (schnell, leuchten), Armbrustjäger (halten Abstand und schießen),
 Inquisitoren (gepanzert, zäh) und der Silberritter als Boss in jeder dritten Nacht.
 
+## Übersicht behalten
+
+Weil die Kamera weit herausgezoomt ist, gibt es zwei Orientierungshilfen:
+
+* **Minimap** oben rechts: zeigt das ganze Tal mit allen drei Wegen (aktive Wege leuchten), Burg,
+  eigenen Gebäuden, Blutteich, deinem Helden und dem aktuellen Bildausschnitt. Antippen klappt sie
+  auf ein kleines 🗺-Symbol zusammen.
+* **Richtungs-Pins am Bildrand** mit Entfernung in Metern — je ein Pin pro Angriffsweg, auf dem
+  gerade Jäger unterwegs sind, plus einer zur Burg.
+
 ## Steuerung
 
 * **Linker Daumen** (unten links) oder **WASD / Pfeiltasten**: Held bewegen
